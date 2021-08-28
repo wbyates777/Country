@@ -42,8 +42,7 @@ operator>>( std::istream& istr, Country& c )
 std::string
 Country::name( void ) const 
 {
-	return m_fullCountryNames[m_fromISO[m_country]];
-	
+	return m_fullCountryNames[m_fromISO[m_country]];	
 }
 
 
@@ -63,10 +62,10 @@ Country::setCountry( const std::string& str )
 {	
     //assert(str.size() == 3);
     if (str.size() != 3)
-	{
+    {
         m_country = Country::XXX; // NOCOUNTRY
-		return false;
-	}
+	return false;
+    }
     
     int index = str[0] - 65; // 'A';
     
@@ -77,50 +76,50 @@ Country::setCountry( const std::string& str )
         return false;
     }
     
-	int low   = m_searchPoints[index]; 
-	int high  = m_searchPoints[index + 1]; 
+    int low   = m_searchPoints[index]; 
+    int high  = m_searchPoints[index + 1]; 
 
-	while (low < high) 
+    while (low < high) 
+    {
+	int mid = low + ((high - low) >> 1);
+	const char * const cty = m_countryNames[mid];
+
+	int i = 1;
+
+	for (; i < 3; ++i)
 	{
-        int mid = low + ((high - low) >> 1);
-        const char * const cty = m_countryNames[mid];
-        
-        int i = 1;
-        
-        for (; i < 3; ++i)
-        {
-            const char &a = str[i];
-            const char &b = cty[i];
-            
-            if (a < b)
-            {
-                high = mid; 
-                break;
-            }
-            
-            if (a > b)
-            {
-                low = mid + 1;
-                break;
-            }
-        }
-        
-        if (i > 2)
-        {
-            m_country = m_toISO[mid]; 
-			return true;
-        }
+	    const char &a = str[i];
+	    const char &b = cty[i];
+
+	    if (a < b)
+	    {
+		high = mid; 
+		break;
+	    }
+
+	    if (a > b)
+	    {
+		low = mid + 1;
+		break;
+	    }
 	}
 
+	if (i > 2)
+	{
+	    m_country = m_toISO[mid]; 
+	    return true;
+	}
+    }
+
     m_country = Country::XXX; // NOCOUNTRY
-	return false;
+    return false;
 }
 
 
 // if you add countries make sure you add the names in the correct alphabetic order position
 // or else the binary chop search in setCountry(std::string) won't work
 const char * const Country::m_countryNames[NUMCOUNTRY] = { 
-    "NOCOUNTRY",
+        "NOCOUNTRY",
 	"ABW", "AFG", "AGO", "AIA", "ALA", "ALB", "AND", "ARE", "ARG", "ARM", 
 	"ASM", "ATA", "ATF", "ATG", "AUS", "AUT", "AZE", "BDI", "BEL", "BEN", 
 	"BES", "BFA", "BGD", "BGR", "BHR", "BHS", "BIH", "BLM", "BLR", "BLZ", 
